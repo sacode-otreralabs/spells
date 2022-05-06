@@ -9,8 +9,8 @@ description: |
 container: ${options.container}
 basePath: ${options.basePath}
 relativePath: ${namespace}/tables
-fileName: ${name}.md
-fileType: md
+fileName: ${schema}.${objectName}.meta.sql
+fileType: sql-query
 ---
 DECLARE @json NVARCHAR(MAX) = (
   SELECT 
