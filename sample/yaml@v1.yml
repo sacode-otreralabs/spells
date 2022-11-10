@@ -1,0 +1,52 @@
+author: 🔀ingestron.io
+script: sample/yaml@v1
+relativePath: meta/api
+fileName: futurama.yaml
+fileType: yaml
+documentation: https://sampleapis.com/api-list/futurama
+tags: [demo]
+output: |
+  {
+    "baseUrl": baseUrl,
+    "datasets": datasets[name in ${datasets}]
+  }
+---
+baseUrl: https://api.sampleapis.com/futurama/
+datasets:
+  - name: characters
+    relativeUrl: characters
+    mapping:
+      parentNode: $.*
+      columns:
+        - { path: 'id', name: 'id' }
+        - { path: 'name.first', name: 'firstName' }
+        - { path: 'name.last', name: 'lastName' }
+        - { path: 'age', name: 'age' }
+        - { path: 'images.main', name: 'imageUrl' }
+        - { path: 'gender', name: 'gender' }
+        - { path: 'homePlanet', name: 'homePlanet' }
+        - { path: 'occupation', name: 'occupation' }
+    schema:
+      columns:
+        - { columnName: 'id', type: 'number', unique: true }
+        - { columnName: 'firstName', type: 'string' }
+        - { columnName: 'lastName', type: 'string' }
+        - { columnName: 'age', type: 'number' }
+        - { columnName: 'imageUrl', type: 'string' }
+        - { columnName: 'gender', type: 'string' }
+        - { columnName: 'homePlanet', type: 'string' }
+        - { columnName: 'occupation', type: 'string' }
+  - name: sayings
+    relativeUrl: sayings
+    mapping:
+      query: '**.sayings#$idx.{"id": ($idx + 1), "characterId": %.id, "value": $}'
+  - name: episodes
+    relativeUrl: episodes
+    mapping:
+      parentNode: $.*
+      columns:
+        - { path: 'id', name: 'id' }
+        - { path: 'number', name: 'number' }
+        - { path: 'title', name: 'title' }
+        - { path: 'writers', name: 'writers' }
+        - { path: 'description', name: 'desc' }

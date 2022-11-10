@@ -1,0 +1,69 @@
+---
+author: 🔀ingestron.io
+script: api/futurama@v1
+description: |
+  If you are a Futurama fan, then this api is for you. Here you can find everything from Episodes 
+  to Characters to Trivia Questions, and even some of the Products featured on the show.
+  -- @dataset {string} dataset name to fetch.
+  returns {json} metadata object in JSON format.
+relativePath: meta/api
+fileName: futurama.yaml
+fileType: yaml
+tags: [metadata, api]
+output: |
+  {
+    "baseUrl": baseUrl,
+    "dataset": datasets[name = '${dataset}']
+  }
+---
+baseUrl: https://api.sampleapis.com/futurama/
+datasets:
+  - name: characters
+    relativeUrl: characters
+    mapping:
+      parentNode: $.*
+      columns:
+        - { path: id, name: id }
+        - { path: name.first, name: firstName }
+        - { path: name.last, name: lastName }
+        - { path: age, name: age }
+        - { path: images.main, name: imageUrl }
+        - { path: gender, name: gender }
+        - { path: homePlanet, name: homePlanet }
+        - { path: occupation, name: occupation }
+    schema:
+      columns:
+        - { name: id, type: int, unique: true }
+        - { name: firstName, type: varChar }
+        - { name: lastName, type: varChar }
+        - { name: age, type: int }
+        - { name: imageUrl, type: varChar }
+        - { name: gender, type: varChar }
+        - { name: homePlanet, type: varChar }
+        - { name: occupation, type: varChar }
+  - name: sayings
+    relativeUrl: sayings
+    mapping:
+      query: '**.sayings#$idx.{"id": ($idx + 1), "characterId": %.id, "value": $}'
+    schema:
+      columns:
+        - { name: id, type: int, unique: true }
+        - { name: characterId, type: int }
+        - { name: value, type: varChar }
+  - name: episodes
+    relativeUrl: episodes
+    mapping:
+      parentNode: $.*
+      columns:
+        - { path: id, name: id }
+        - { path: number, name: number }
+        - { path: title, name: title }
+        - { path: writers, name: writers }
+        - { path: description, name: desc }
+    schema:
+      columns:
+        - { name: id, type: int, unique: true }
+        - { name: number, type: int }
+        - { name: title, type: varChar }
+        - { name: writers, type: varChar }
+        - { name: description, type: varChar }
