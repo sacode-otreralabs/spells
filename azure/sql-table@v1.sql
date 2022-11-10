@@ -1,3 +1,4 @@
+---
 author: 🔀ingestron.io
 script: azure/sql-table@v1
 description: Create SQL table.
@@ -8,7 +9,7 @@ context:
   schema: ${schema}
   objectName: ${objectName}
   columns: ${columns}
-  pk: ${pk}
+  pk: ${pk | d([])}
 output: |
   {
     "relativePath": "${context.namespace}/tables",

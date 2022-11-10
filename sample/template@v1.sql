@@ -1,3 +1,4 @@
+---
 author: 🔀ingestron.io
 script: sample/template@v1
 description: |

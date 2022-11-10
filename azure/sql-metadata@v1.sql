@@ -1,3 +1,4 @@
+---
 author: 🔀ingestron.io
 script: azure/sql-metadata@v1
 description: Retrieve table/view metadata from SQL database.
