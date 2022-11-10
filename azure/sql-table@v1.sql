@@ -9,7 +9,6 @@ context:
   schema: ${schema}
   objectName: ${objectName}
   columns: ${columns}
-  pk: ${pk | d([])}
 output: |
   {
     "relativePath": "${context.namespace}/tables",
@@ -26,7 +25,7 @@ CREATE TABLE [{{context.schema}}].[{{context.objectName}}] (
   {%- for key in context.columns | d([]) %}
   [{{key.name}}] {{ key.type }}
   {{- utils.dbColumn(key.name, key.type, key.precision, key.scale) -}}, 
-  {{- ' -- PK' if (key.name in context.pk) or (key.unique == true) | d([]) -}}
+  {{- ' -- PK' if key.unique == true | d([]) -}}
   {%- endfor %}
   dwSessionId varchar(50) NOT NULL,
   dwDomain varchar(100) NOT NULL,
