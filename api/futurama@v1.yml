@@ -34,13 +34,13 @@ datasets:
     schema:
       columns:
         - { name: id, type: int, unique: true }
-        - { name: firstName, type: varChar }
-        - { name: lastName, type: varChar }
+        - { name: firstName, type: varchar }
+        - { name: lastName, type: varchar }
         - { name: age, type: int }
-        - { name: imageUrl, type: varChar }
-        - { name: gender, type: varChar }
-        - { name: homePlanet, type: varChar }
-        - { name: occupation, type: varChar }
+        - { name: imageUrl, type: varchar }
+        - { name: gender, type: varchar }
+        - { name: homePlanet, type: varchar }
+        - { name: occupation, type: varchar }
   - name: sayings
     relativeUrl: sayings
     mapping:
@@ -49,21 +49,16 @@ datasets:
       columns:
         - { name: id, type: int, unique: true }
         - { name: characterId, type: int }
-        - { name: value, type: varChar }
+        - { name: value, type: varchar }
   - name: episodes
     relativeUrl: episodes
     mapping:
       parentNode: $.*
-      columns:
-        - { path: id, name: id }
-        - { path: number, name: number }
-        - { path: title, name: title }
-        - { path: writers, name: writers }
-        - { path: description, name: desc }
+      columns: [id, number, title, writers, description]
     schema:
       columns:
         - { name: id, type: int, unique: true }
         - { name: number, type: int }
-        - { name: title, type: varChar }
-        - { name: writers, type: varChar }
-        - { name: description, type: varChar }
+        - { name: title, type: varchar }
+        - { name: writers, type: varchar }
+        - { name: description, type: varchar }

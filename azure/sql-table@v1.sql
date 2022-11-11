@@ -19,7 +19,12 @@ output: |
 -- Author:    {{author}}
 -- Generated: {{ 'now' | time('YYYY-MM-DD') }}
 -- {{ description | replace("\n","\n-- ") }}
+
 {%- import "./azure/helpers/index.njk" as utils -%}
+
+IF OBJECT_ID('[{{context.schema}}].[{{context.objectName}}]', 'U') IS NOT NULL 
+  DROP TABLE [{{context.schema}}].[{{context.objectName}}];
+GO
 
 CREATE TABLE [{{context.schema}}].[{{context.objectName}}] (
   {%- for key in context.columns | d([]) %}
