@@ -21,10 +21,10 @@ output: |
 -- Generated: {{ 'now' | time('YYYY-MM-DD') }}
 -- {{ description | replace("\n","\n-- ") }}
 
+IF SCHEMA_ID('{{context.schema}}') IS NULL EXEC('CREATE SCHEMA [{{context.schema}}]')
 
 IF OBJECT_ID('[{{context.schema}}].[{{context.objectName}}]', 'U') IS NOT NULL 
-  DROP TABLE [{{context.schema}}].[{{context.objectName}}];
-GO
+  DROP TABLE [{{context.schema}}].[{{context.objectName}}]
 
 CREATE TABLE [{{context.schema}}].[{{context.objectName}}] (
   {%- for key in context.columns | d([]) %}
@@ -36,5 +36,4 @@ CREATE TABLE [{{context.schema}}].[{{context.objectName}}] (
   dwDomain varchar(100) NOT NULL,
   dwCreateDate datetime NOT NULL,
   dwUpdateDate datetime NOT NULL        
-);
-GO
+)
