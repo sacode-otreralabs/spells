@@ -1,0 +1,33 @@
+---
+author: ${author}
+script: azure/adf@v1
+description: Prepare metadata for Azure Data Factory.
+fileType: yaml
+tags: [meta, azure-data-factory]
+context:
+  sql: ${sql}
+  source: ${source}
+
+output: |
+  {
+    "datasets": ${context.sql}@$meta.{
+      "comment": fileType,
+      "api": {
+          "baseUrl": ($link := $meta.datasetId; $$.source.outputs[dataset.name=$link]).baseUrl,
+          "relativeUrl": ($link := $meta.datasetId; $$.source.outputs[dataset.name=$link]).dataset.relativeUrl,
+          "additionalColumns": $meta.additionalColumns,
+          "mapping": ($link := $meta.datasetId; $$.source.outputs[dataset.name=$link]).dataset.mapping
+      },
+      "copy": {
+        "schemaName": $meta.schemaName,
+        "tableName": $meta.datasetId,
+        "primaryKeys": ($link := $meta.datasetId; $$.source.outputs[dataset.name=$link]).primaryKeys,
+        "translator": $meta.translator
+      },
+      "scripts": {
+          "createTable": $meta.body
+        }
+    }
+  }
+---
+comment: script

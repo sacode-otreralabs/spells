@@ -43,7 +43,7 @@ datasets:
         - { name: homePlanet, type: varchar }
         - { name: occupation, type: varchar }
   - name: sayings
-    relativeUrl: sayings
+    relativeUrl: characters
     mapping:
       query: '**.sayings#$idx.{"id": ($idx + 1), "characterId": %.id, "value": $}'
     schema:
