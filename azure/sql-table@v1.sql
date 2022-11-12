@@ -14,11 +14,18 @@ adfDataTypes:
   - int: Int32
   - varchar: String
   - nvarchar: String
+dwColumns: 
+  - dwDomain: { name: 'dwDomain', type: 'nvarchar', precision: 100, isNullable: false, expression: '${namespace}' }
+  - dwSessionId: { name: 'dwSessionId', type: 'nvarchar', precision: 100, isNullable: false, expression: '@{pipeline().TriggerId}' }
+  - dwCreateDate: { name: 'dwCreateDate', type: 'datetime', default: 'CURRENT_TIMESTAMP' }
+  - dwUpdateDate: { name: 'dwUpdateDate', type: 'datetime', default: 'CURRENT_TIMESTAMP', expression: '@{utcNow()}' }
+  - dwAuthor: { name: 'dwAuthor', type: 'nvarchar', precision: 100, default: "'🔀 Ingestron.io'" }
+
 output: |
   {
-    "relativePath": "${context.namespace}/tables",
-    "fileName": "${context.schema}.${context.objectName}.sql",
-    "datasetId": "${context.objectName}",
+    "relativePath": context.namespace & "/tables",
+    "fileName": context.schema & "." & context.objectName & ".sql",
+    "datasetId": context.objectName,
     "translator": {
       "type": "TabularTranslator",
       "mappings": $append(context.columns.
@@ -41,7 +48,15 @@ output: |
       }),
       "collectionReference": "$['data']",
       "mapComplexValuesToString": true
-    }
+    },
+    "additionalColumns": $append(context.additionalColumns.
+      {
+        "name": $,
+        "value": {
+            "value": $lookup($$.dwColumns, $).expression,
+            "type": "Expression"
+        }
+      }, [])
   }
 ---
 {%- import "./azure/helpers/index.njk" as utils -%}
