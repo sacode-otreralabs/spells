@@ -17,9 +17,9 @@ adfDataTypes:
   - nvarchar: String
 dwColumns: 
   - dwDomain: { name: 'dwDomain', type: 'nvarchar', precision: 100, isNullable: false, expression: '${namespace}' }
-  - dwSessionId: { name: 'dwSessionId', type: 'nvarchar', precision: 100, isNullable: false, expression: '@{pipeline().TriggerId}' }
+  - dwSessionId: { name: 'dwSessionId', type: 'nvarchar', precision: 100, isNullable: false, expression: '@pipeline().TriggerId' }
   - dwCreateDate: { name: 'dwCreateDate', type: 'datetime', default: 'CURRENT_TIMESTAMP' }
-  - dwUpdateDate: { name: 'dwUpdateDate', type: 'datetime', default: 'CURRENT_TIMESTAMP', expression: '@{utcNow()}' }
+  - dwUpdateDate: { name: 'dwUpdateDate', type: 'datetime', default: 'CURRENT_TIMESTAMP', expression: '@utcNow()' }
   - dwAuthor: { name: 'dwAuthor', type: 'nvarchar', precision: 100, default: "'🔀 Ingestron.io'" }
 
 output: |
@@ -54,7 +54,10 @@ output: |
     "additionalColumns": $append(context.additionalColumns.
       {
         "name": $,
-        "value": $lookup($$.dwColumns, $).expression
+        "value": {
+            "value": $lookup($$.dwColumns, $).expression,
+            "type": "Expression"
+        }
       }, [])
   }
 ---
