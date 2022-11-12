@@ -5,9 +5,10 @@ description: Create SQL table.
 fileType: template
 tags: [ddl, azure-sql]
 context:
+  datasetId: ${datasetId}
   namespace: ${namespace}
-  schema: ${schema}
-  objectName: ${objectName}
+  schemaName: ${schemaName}
+  tableName: ${tableName}
   columns: ${columns}
   additionalColumns: ${additionalColumns}
 adfDataTypes:
@@ -23,9 +24,10 @@ dwColumns:
 
 output: |
   {
-    "relativePath": context.namespace & "/tables",
-    "fileName": context.schema & "." & context.objectName & ".sql",
-    "datasetId": context.objectName,
+    "datasetId": context.datasetId,
+    "namespace": context.namespace,
+    "schemaName": context.schemaName,
+    "tableName": context.tableName,
     "translator": {
       "type": "TabularTranslator",
       "mappings": $append(context.columns.
@@ -65,12 +67,12 @@ output: |
 -- Generated: {{ 'now' | time('YYYY-MMM-DD') }}
 -- {{ description | replace("\n","\n-- ") }}
 
-IF SCHEMA_ID('{{context.schema}}') IS NULL EXEC('CREATE SCHEMA [{{context.schema}}]')
+IF SCHEMA_ID('{{context.schemaName}}') IS NULL EXEC('CREATE SCHEMA [{{context.schemaName}}]')
 
-IF OBJECT_ID('[{{context.schema}}].[{{context.objectName}}]', 'U') IS NOT NULL 
-  DROP TABLE [{{context.schema}}].[{{context.objectName}}]
+IF OBJECT_ID('[{{context.schemaName}}].[{{context.tableName}}]', 'U') IS NOT NULL 
+  DROP TABLE [{{context.schemaName}}].[{{context.tableName}}]
 
-CREATE TABLE [{{context.schema}}].[{{context.objectName}}] (
+CREATE TABLE [{{context.schemaName}}].[{{context.tableName}}] (
   {%- for key in context.columns | d([]) %}
   [{{key.name}}] {{ key.type }}
   {{- utils.dbColumn(key.name, key.type, key.precision, key.scale, key.isNullable or key.unique, key.default) -}}, 
