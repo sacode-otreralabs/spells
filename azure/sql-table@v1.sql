@@ -54,10 +54,7 @@ output: |
     "additionalColumns": $append(context.additionalColumns.
       {
         "name": $,
-        "value": {
-            "value": $lookup($$.dwColumns, $).expression,
-            "type": "Expression"
-        }
+        "value": $lookup($$.dwColumns, $).expression
       }, [])
   }
 ---
