@@ -64,7 +64,7 @@ datasets:
     schema:
       columns:
         - { name: id, type: int, unique: true }
-        - { name: number, type: int }
+        - { name: number, type: varchar }
         - { name: title, type: varchar }
         - { name: writers, type: varchar }
         - { name: description, type: varchar }
