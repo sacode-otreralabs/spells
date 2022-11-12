@@ -1,3 +1,11 @@
+{%- set dwColumns = [
+  { name: 'dwDomain', type: 'nvarchar', precision: 100, isNullable: false }, 
+  { name: 'dwSessionId', type: 'nvarchar', precision: 100, isNullable: false },
+  { name: 'dwCreateDate', type: 'datetime', default: 'CURRENT_TIMESTAMP' },
+  { name: 'dwUpdateDate', type: 'datetime', default: 'CURRENT_TIMESTAMP' },
+  { name: 'dwAuthor', type: 'nvarchar', precision: 100, default: "'🔀 Ingestron.io'" }
+] -%}
+
 {% macro field(name, value='', type='text') %}
 <div class="field">
   <input type="{{ type }}" name="{{ name }}"
@@ -5,12 +13,29 @@
 </div>
 {% endmacro %}
 
-{% macro dbColumn(name, type, precision, scale) %}
-{%- set strings = ['char', 'varchar', 'string'] -%}
+{% macro dbColumn(name, type, precision, scale, isNullable, default) %}
+{%- set strings = ['char', 'varchar', 'nvarchar', 'string'] -%}
 {%- set decimals = ['decimal'] -%}
 {%- set integers = ['smallint', 'int16', 'int'] -%}
 {{ '(' if type in strings or type in decimals -}}
 {{ precision | d('max') if type in strings -}}
 {{ precision + ', ' + scale if type in decimals -}}
 {{- ')' if type in strings or type in decimals -}}
+{{- ' NOT NULL' if not isNullable | d(true) -}}
+{{- (' DEFAULT '+ default if default) | safe -}}
+{% endmacro %}
+
+{% macro additionalColumns(names, context) %}
+{%- set additionalColumns = [] -%}
+{%- for column in dwColumns | d([]) %}
+  {%- if column.name in names -%}
+    {%- set additionalColumns = (additionalColumns.push(column), additionalColumns) -%}
+  {%- endif -%}
+{%- endfor %}
+{%- for column in additionalColumns | d([]) %}
+  [{{column.name}}] {{ column.type }}
+  {{- dbColumn(column.name, column.type, column.precision, column.scale, column.isNullable, column.default) -}}
+  {{- ',' if not loop.last }}
+  {{- ' -- PK' if column.unique | d(false) -}}
+{%- endfor %}
 {% endmacro %}
