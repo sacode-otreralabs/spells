@@ -13,7 +13,8 @@ tags: [metadata, api]
 output: |
   {
     "baseUrl": baseUrl,
-    "dataset": datasets[name = '${dataset}']
+    "dataset": datasets[name = '${dataset}'],
+    "primaryKeys": $append(datasets[name = '${dataset}'].schema.columns[unique].name, [])
   }
 ---
 baseUrl: https://api.sampleapis.com/futurama/
@@ -36,7 +37,7 @@ datasets:
         - { name: id, type: int, unique: true }
         - { name: firstName, type: varchar }
         - { name: lastName, type: varchar }
-        - { name: age, type: int }
+        - { name: age, type: varchar }
         - { name: imageUrl, type: varchar }
         - { name: gender, type: varchar }
         - { name: homePlanet, type: varchar }
@@ -54,7 +55,12 @@ datasets:
     relativeUrl: episodes
     mapping:
       parentNode: $.*
-      columns: [id, number, title, writers, description]
+      columns:
+        - { path: id, name: id }
+        - { path: number, name: number }
+        - { path: title, name: title }
+        - { path: writers, name: writers }
+        - { path: description, name: desc }
     schema:
       columns:
         - { name: id, type: int, unique: true }
