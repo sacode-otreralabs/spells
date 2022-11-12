@@ -60,7 +60,7 @@ datasets:
         - { path: number, name: number }
         - { path: title, name: title }
         - { path: writers, name: writers }
-        - { path: description, name: desc }
+        - { path: description, name: description }
     schema:
       columns:
         - { name: id, type: int, unique: true }
